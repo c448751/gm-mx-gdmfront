@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>GM Digital Management</title>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+
+    <style>
+
+        :root {
+            --gm-blue: #11365f;
+            --gm-light-blue: #e8eef9;
+            --gm-dark: #1b1b1b;
+        }
+
+        body {
+            background-color: #edf4f9;
+            font-family: 'Overpass', sans-serif !important;
+        }
+
+        .table-gm thead {
+            background-color: var(--gm-light-blue) !important;
+            color: var(--gm-dark);
+            border-bottom: 1px solid  rgb(0, 93, 171);
+        }
+
+        .table-gm td, .table-gm th {
+            border-color: #dcdcdc;
+        }
+
+        .gm-header-fixed {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            z-index: 99999 !important;
+        }
+
+        .body-offset {
+            padding-top: 95px !important;
+        }
+        .modal-header {
+            background-color: var(--gm-blue);
+            color: white;
+        }
+
+        .gm_image{
+            width:10px;
+            height:10px;
+        }
+    </style>
+</head>
+
+<body class="body-offset">
+
+<div th:replace="~{fragments/header :: navbar}" class="gm-header-fixed"></div>
+
+<div class="container mt-5">
+
+    <!-- HEADER -->
+    <h3>MANAGEMENT</h3>
+
+    <div class="d-flex flex-row-reverse align-items-center mb-4">
+
+        <a href="/management/add" class="btn btn-search px-4">
+            Export
+            <img class="gm_image" th:src="@{/images/share.png}" alt="share">
+        </a>
+
+        <div class="ms-3"> </div>
+
+        <a href="/management/add" class="btn btn-search px-4 ma">
+            Add +
+        </a>
+
+    </div>
+
+    <!-- SEARCH -->
+    <div class="card shadow-sm border-0 search-card mb-4">
+        <div class="search-title">SEARCH BY</div>
+
+        <div class="card-body">
+            <form th:action="@{/management}" method="get">
+
+                <div class="row g-3">
+
+                    <!-- Region -->
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <label class="form-label">Division</label>
+                        <select class="form-select" name="region">
+                            <option value="">All</option>
+                            <option th:each="r : ${regions}"
+                                    th:value="${r.idRegion}"
+                                    th:text="${r.nameRegion}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Brand -->
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <label class="form-label">Brand</label>
+                        <select class="form-select" name="brand">
+                            <option value="">All</option>
+                            <option th:each="b : ${brands}"
+                                    th:value="${b.idBrand}"
+                                    th:text="${b.nameBrand}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Type -->
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <label class="form-label">Vehicle Type</label>
+                        <select class="form-select" name="type">
+                            <option value="">All</option>
+                            <option th:each="t : ${types}"
+                                    th:value="${t.idType}"
+                                    th:text="${t.typeName}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Model -->
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <label class="form-label">Model</label>
+                        <select class="form-select" name="model">
+                            <option value="">All</option>
+                            <option th:each="m : ${models}"
+                                    th:value="${m.idModel}"
+                                    th:text="${m.modelName}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Year -->
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <label class="form-label">Year</label>
+                        <input type="number" class="form-control" name="year">
+                    </div>
+
+                    <!-- Name -->
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-control" name="name">
+                    </div>
+
+                    <div class="col-12 text-end mt-2">
+                        <button type="submit" class="btn btn-search px-4">Search</button>
+                    </div>
+
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="card shadow-sm border-0 mt-4">
+        <div class="card-body">
+
+            <table class="table table-bordered align-middle table-gm">
+                <thead class="table-light">
+                <tr>
+                    <th>Brand</th>
+                    <th>Type</th>
+                    <th>Vehicle</th>
+                    <th>Model</th>
+                    <th>Year</th>
+                    <th>Division</th>
+                    <th style="width:5%" ></th>
+                    <th style="width:5%" ></th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="v : ${vehicles}">
+                    <td th:text="${v.relation.brandRegionRelation.brand.nameBrand}"></td>
+                    <td th:text="${v.relation.type.typeName}"></td>
+                    <td th:text="${v.nameVehicle}"></td>
+                    <td th:text="${v.relation.model.modelName}"></td>
+                    <td th:text="${v.year}"></td>
+                    <td th:text="${v.relation.brandRegionRelation.region.nameRegion}"></td>
+
+                    <td class="text-center">
+                        <a th:href="@{'/edit/' + ${v.idVehicle}}" class="action-btn">
+                            <img th:src="@{/images/edit.png}" alt="edit">
+                        </a>
+                    </td>
+
+                    <td class="text-center">
+                        <a href="#" class="action-btn"
+                           th:attr="onclick=|openDeleteModal(${v.idVehicle})|">
+                            <img th:src="@{/images/delete1.png}" alt="delete">
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+    <div class="mt-5"></div>
+
+</div>
+
+<!-- ========================================================= -->
+<!-- ====================== MODAL DELETE ====================== -->
+<!-- ========================================================= -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header  text-white">
+                <h5 class="modal-title">Delete Vehicle</h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <div id="deletePendingMsg" class="alert alert-warning d-none">
+                    A delete request for this vehicle already exists.
+                    Please wait for approval or rejection.
+                </div>
+
+                <table class="table table-bordered align-middle">
+                    <thead class="table-light">
+                    <tr>
+                        <th>Brand</th>
+                        <th>Type</th>
+                        <th>Name</th>
+                        <th>Model</th>
+                        <th>Year</th>
+                        <th>Division</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td id="delBrand"></td>
+                        <td id="delType"></td>
+                        <td id="delName"></td>
+                        <td id="delModel"></td>
+                        <td id="delYear"></td>
+                        <td id="delRegion"></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="alert alert-danger">
+                    <strong>Warning:</strong> This action will inactivate the vehicle from the system once approved.
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-search px-4" data-bs-dismiss="modal">Cancel</button>
+
+                <button class="btn btn-search px-4" id="btnSendDelete">
+                    Delete
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- SUCCESS MODAL -->
+<div class="modal fade" id="deleteSuccessModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-4 text-center">
+
+            <h4 class="text-success mb-3">Request Submitted</h4>
+            <p>The delete request has been sent successfully.</p>
+
+            <button class="btn btn-search px-4" data-bs-dismiss="modal">
+                OK
+            </button>
+
+        </div>
+    </div>
+</div>
+
+<!-- ========================================================= -->
+<!-- ====================== BOOTSTRAP JS ====================== -->
+<!-- ========================================================= -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+
+    const deleteModal = document.getElementById("deleteModal");
+    const deleteSuccessModal = document.getElementById("deleteSuccessModal");
+
+    let selectedVehicleId = null;
+
+    function openDeleteModal(id) {
+
+        selectedVehicleId = id;
+
+        fetch("/api/vehicle/" + id)
+            .then(r => r.json())
+            .then(v => {
+
+                delBrand.textContent  = v.brand;
+                delType.textContent   = v.type;
+                delName.textContent   = v.name;
+                delModel.textContent  = v.model;
+                delYear.textContent   = v.year;
+                delRegion.textContent = v.region;
+
+                if (v.pendingDelete) {
+                    deletePendingMsg.classList.remove("d-none");
+                    btnSendDelete.disabled = true;
+                } else {
+                    deletePendingMsg.classList.add("d-none");
+                    btnSendDelete.disabled = false;
+                }
+
+                new bootstrap.Modal(deleteModal).show();
+            });
+    }
+
+    btnSendDelete.onclick = function() {
+
+        fetch("/management/delete/confirm?idVehicle=" + selectedVehicleId, {
+            method: "POST"
+        })
+            .then(r => r.text())
+            .then(res => {
+
+                bootstrap.Modal.getInstance(deleteModal).hide();
+
+                if (res === "OK") {
+                    new bootstrap.Modal(deleteSuccessModal).show();
+                } else {
+                    alert("Error sending request.");
+                }
+
+            });
+    };
+
+</script>
+
+</body>
+</html>

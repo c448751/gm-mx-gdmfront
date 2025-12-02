@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>GM Digital Management</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+
+    <style>
+        :root {
+            --gm-blue: #11365f;
+            --gm-light-blue: #e8eef9;
+            --gm-dark: #1b1b1b;
+        }
+        body {
+            background-color: #edf4f9;
+            font-family: 'Overpass', sans-serif !important;
+        }
+
+        .table-gm thead {
+            background-color: var(--gm-light-blue) !important;
+            color: var(--gm-dark);
+            border-bottom: 1px solid  rgb(0, 93, 171);
+        }
+
+        .table-gm td, .table-gm th {
+            border-color: #dcdcdc;
+        }
+
+        .gm-header-fixed {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            z-index: 99999 !important;
+        }
+
+        .body-offset {
+            padding-top: 95px !important;
+        }
+
+        .modal-body {
+            max-height: 75vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            background-color: var(--gm-blue);
+            color: white;
+        }
+        .section-title {
+            color: var(--gm-blue);
+            font-weight: bold;
+            border-left: 4px solid var(--gm-blue);
+            padding-left: 8px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body class="body-offset">
+
+<!-- NAVBAR -->
+<div th:replace="~{fragments/header :: navbar}" class="gm-header-fixed"></div>
+
+<!-- ============================= -->
+<!--  SEARCH CARD -->
+<!-- ============================= -->
+<div class="container mt-5 search-wrapper">
+    <h3 class="mb-3">MAIN</h3>
+
+    <div class="card shadow-sm search-card mb-4">
+        <div class="search-title">SEARCH BY</div>
+
+        <div class="card-body">
+
+            <form method="get" action="/search">
+                <div class="row g-3">
+
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <label class="form-label">Division</label>
+                        <select class="form-select" name="region">
+                            <option value=""> </option>
+                            <option th:each="r : ${regiones}"
+                                    th:value="${r.idRegion}"
+                                    th:text="${r.nameRegion}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <label class="form-label">Brand</label>
+                        <select class="form-select" name="brand">
+                            <option value=""> </option>
+                            <option th:each="b : ${brands}"
+                                    th:value="${b.idBrand}"
+                                    th:text="${b.nameBrand}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <label class="form-label">Vehicle Type</label>
+                        <select class="form-select" name="type">
+                            <option value="">  </option>
+                            <option th:each="t : ${types}"
+                                    th:value="${t.idType}"
+                                    th:text="${t.typeName}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <label class="form-label">Model</label>
+                        <select class="form-select" name="model">
+                            <option value=""> </option>
+                            <option th:each="m : ${models}"
+                                    th:value="${m.idModel}"
+                                    th:text="${m.modelName}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <label class="form-label">Year</label>
+                        <input type="number" name="year" class="form-control">
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <label class="form-label">Name</label>
+                        <input type="text" name="name" class="form-control">
+                    </div>
+
+                    <div class="col-12 text-end mt-2">
+                        <button type="submit" class="btn btn-search px-4">Search</button>
+                    </div>
+
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<!-- ============================= -->
+<!-- RESULTS TABLE -->
+<!-- ============================= -->
+<div class="container mt-4">
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+
+            <table class="table table-bordered align-middle table-gm" th:if="${results}">
+                <thead class="table-light">
+                <tr>
+                    <th style="width:5%" class="text-center"></th>
+                    <th style="width:8%">Division</th>
+                    <th>Brand</th>
+                    <th>Type</th>
+                    <th>Model</th>
+                    <th>Year</th>
+                    <th>Name</th>
+                    <th style="width:5%" class="text-center"></th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="v : ${results}">
+
+                    <td class="text-center">
+                        <a class="action-btn viewVehicleBtn"
+
+                           th:data-division="${v.relation.brandRegionRelation.region.nameRegion}"
+                           th:data-brand="${v.relation.brandRegionRelation.brand.nameBrand}"
+                           th:data-type="${v.relation.type.typeName}"
+                           th:data-model="${v.relation.model.modelName}"
+                           th:data-year="${v.year}"
+                           th:data-name="${v.nameVehicle}"
+
+                           th:data-pdf-en="${v.fileNameEng != null ? '/pdf/' + v.fileNameEng : ''}"
+                           th:data-pdf-es="${v.fileNameSpa != null ? '/pdf/' + v.fileNameSpa : ''}">
+
+                            <img th:src="@{/images/view_car.png}" alt="view_car">
+                        </a>
+                    </td>
+
+                    <td th:text="${v.relation.brandRegionRelation.region.nameRegion}"></td>
+                    <td th:text="${v.relation.brandRegionRelation.brand.nameBrand}"></td>
+                    <td th:text="${v.relation.type.typeName}"></td>
+                    <td th:text="${v.relation.model.modelName}"></td>
+                    <td th:text="${v.year}"></td>
+                    <td th:text="${v.nameVehicle}"></td>
+
+                    <td class="text-center">
+                        <a th:href="@{/edit/{id}(id=${v.idVehicle})}" class="action-btn">
+                            <img th:src="@{/images/edit.png}" alt="edit">
+                        </a>
+                    </td>
+
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <div class="mt-5"></div>
+
+</div>
+
+
+<!-- ============================= -->
+<!-- MODAL VEHICLE + PDF -->
+<!-- ============================= -->
+<div class="modal fade" id="vehicleModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Vehicle Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <h6 class="section-title">General Information</h6>
+                <hr>
+                <div class="row g-3 mb-4">
+                    <div class="col-6v col-md-4 "><label class="fw-bold ">Division</label> <div id="modalDivision"></div></div>
+                    <div class="col-6 col-md-4 "><label class="fw-bold">Brand</label> <div id="modalBrand"></div></div>
+                    <div class="col-6 col-md-4"><label class="fw-bold">Type</label> <div id="modalType"></div></div>
+                    <div class="col-6 col-md-4"><label class="fw-bold">Model</label> <div id="modalModel"></div></div>
+                    <div class="col-6 col-md-4"><label class="fw-bold">Year</label> <div id="modalYear"></div></div>
+                    <div class="col-6 col-md-4"><label class="fw-bold">Name</label> <div id="modalName"></div></div>
+                </div>
+                <h6 class="section-title">PDF Preview</h6>
+                <hr>
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#pdfEn">English Manual</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#pdfEs">Spanish Manual</button>
+                    </li>
+                </ul>
+
+                <div class="tab-content mt-3">
+                    <div class="tab-pane fade show active" id="pdfEn">
+                        <iframe id="pdfEnViewer" src="" width="100%" height="600px" style="border:1px solid #ccc;"></iframe>
+                    </div>
+
+                    <div class="tab-pane fade" id="pdfEs">
+                        <iframe id="pdfEsViewer" src="" width="100%" height="600px" style="border:1px solid #ccc;"></iframe>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- ============================= -->
+<!-- JS -->
+<!-- ============================= -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+        document.querySelectorAll(".viewVehicleBtn").forEach(btn => {
+            btn.addEventListener("click", function () {
+
+                document.getElementById("modalDivision").textContent = this.dataset.division;
+                document.getElementById("modalBrand").textContent = this.dataset.brand;
+                document.getElementById("modalType").textContent = this.dataset.type;
+                document.getElementById("modalModel").textContent = this.dataset.model;
+                document.getElementById("modalYear").textContent = this.dataset.year;
+                document.getElementById("modalName").textContent = this.dataset.name;
+
+                document.getElementById("pdfEnViewer").src =
+                    this.dataset.pdfEn !== "" ? this.dataset.pdfEn : "";
+                document.getElementById("pdfEsViewer").src =
+                    this.dataset.pdfEs !== "" ? this.dataset.pdfEs : "";
+
+                new bootstrap.Modal(document.getElementById("vehicleModal")).show();
+            });
+        });
+
+    });
+</script>
+
+</body>
+</html>

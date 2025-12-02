@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body class="body-offset">
+
+<!-- ====== ESTILOS SOLO PARA EL HEADER FIJO ====== -->
+<style>
+    /* Header completo fijo */
+    .gm-header-fixed {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 9999;
+    }
+
+    /* Evita que el contenido quede detrás del header */
+    .body-offset {
+        padding-top: 125px; /* Ajusta según la altura real de tus dos barras */
+    }
+</style>
+
+<div th:fragment="navbar" class="gm-header-fixed">
+
+    <!-- NAVBAR PRINCIPAL -->
+    <nav class="navbar navbar-expand-lg main-navbar">
+        <div class="container-fluid d-flex align-items-center">
+
+            <!-- Logo GM desde URL -->
+            <img class="navbar_logo"
+                 src="https://www.gm.com.mx/etc/designs/gbs/components/topbar/img/GM-logo-2021.png"
+                 alt="GM Logo">
+
+            <a class="navbar-brand brand-title" th:href="@{/}">GM DIGITAL MANAGEMENT</a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarMain">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- USER INFO -->
+            <div class="nav-user-info ms-auto">
+                <span th:text="${userName}">USER NAME</span>
+                <div class="divider"></div>
+                <span th:text="${userRegion}">REGION</span>
+            </div>
+
+        </div>
+    </nav>
+
+    <!-- SUB NAVBAR -->
+    <nav class="navbar navbar-expand-lg sub-navbar">
+        <div class="container-fluid">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/}">QUICK ACCESS</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/management}">MANAGEMENT</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/monitoring}">MONITORING</a></li>
+            </ul>
+        </div>
+    </nav>
+
+</div>
+
+</body>
+</html>

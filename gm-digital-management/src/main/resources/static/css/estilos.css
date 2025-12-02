@@ -1,0 +1,180 @@
+@font-face {
+    font-family: 'OverpassExtraBold';
+    src: url('static/fonts/overpass-extrabold.woff2') format('woff2');
+    font-weight: 800;
+    font-style: normal;
+}
+
+
+
+/* ===== NAVBAR PRINCIPAL ===== */
+
+.navbar {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #11365f;
+    color: #ffffff;
+    font-family: Overpass, sans-serif;
+}
+
+.main-navbar {
+    background-color: #11365f;
+    padding-top: 10px;
+    padding-bottom: 8px;
+}
+
+.navbar_logo {
+    width: 40px;
+    margin-right: 20px;
+}
+
+.navbar-brand {
+    color: #ffffff;
+    letter-spacing: 3px;
+    font-size: small;
+}
+
+/* USER INFO */
+.nav-user-info {
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-right: 35px;
+    font-size: 12px;
+    letter-spacing: 2px;
+}
+
+.nav-user-info .divider {
+    width: 1px;
+    height: 20px;
+    background-color: white;
+}
+
+/* ===== SUB NAVBAR ===== */
+.sub-navbar {
+    background-color: #11365f;
+    height: 30px;
+    padding-top: 10px;
+    padding-bottom: 3px;
+    border-top: 3px solid rgba(11, 40, 73, 0.92);
+    border-bottom: 3px solid rgba(11, 40, 73, 0.92);
+}
+
+.sub-navbar .nav-link {
+    color: #ffffff;
+    letter-spacing: 1px;
+    font-size: small;
+    margin-left: 10px;
+    margin-right: 55px;
+}
+
+/* ===== FORM CONTROLS ===== */
+
+.form-label {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Tamaño uniforme sin cortarse */
+.form-select,
+.form-control {
+    background-color: #fff;
+    border-radius: 3px;
+    border: 1px solid #b9b9b9;
+    padding: 6px 8px !important;
+    font-size: 13px;
+    height: auto !important;
+    min-height: 34px;
+}
+
+/* ===== SEARCH FORM CARD ===== */
+.search-card {
+    background: #f4f4f4;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+    border-radius: 3px;
+}
+
+.search-card .card-body {
+    padding: 20px 25px;
+}
+
+.search-title {
+    background-color: #e7e7e7;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 12px 15px;
+    border-bottom: 1px solid #11365f;
+
+}
+
+/* ===== BUTTONS ===== */
+
+.btn-search {
+    background-color: #ffffff;
+    border-radius: 2px;
+    border: 1px solid rgb(0, 93, 171);
+    font-size: 12px;
+    font-weight: 600;
+    color: rgb(0, 93, 171);
+}
+
+.btn-search:hover {
+    background-color: #005dab;
+    color: white;
+}
+
+.modal-h{
+    background-color: #005dab;
+    color: white;
+
+}
+
+.page_name {
+    font-family: Overpass, sans-serif;
+    color: #303030;
+}
+
+/* TABLE ACTION BUTTONS */
+.action-btn img {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+
+
+.action-btn img:hover {
+    opacity: 0.7;
+}
+
+
+a {
+    text-decoration: none !important;
+}
+
+
+table,th, td{
+
+    font-size: 12px;
+
+}
+
+.modal {
+    z-index: 200000 !important;
+}
+
+.modal-backdrop {
+    z-index: 199999 !important;
+}
+
+.modal-backdrop.show {
+    background-color: rgba(0, 0, 0, 0.85) !important;
+    backdrop-filter: blur(8px) !important;           /* blur background */
+    -webkit-backdrop-filter: blur(8px) !important;
+}
+
+

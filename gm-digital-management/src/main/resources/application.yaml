@@ -1,0 +1,24 @@
+server:
+  port: 443
+
+spring:
+  application:
+    name: gm-digital-management
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/odmxgmdc?createDatabaseIfNotExist=true
+    username: root
+    password: x9F$3rV!kQ7@tLm2
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  thymeleaf:
+    cache: false
+
+

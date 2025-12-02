@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>GM Digital Management</title>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/estilos.css}"/>
+
+    <style>
+        body {
+            background-color: #edf4f9;
+            font-family: 'Overpass', sans-serif !important;
+        }
+
+
+        /* ====== HEADER FIJO SOLAMENTE EN ESTA PÁGINA ====== */
+        .gm-header-fixed {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            z-index: 99999 !important;
+        }
+
+        /* ==== offset mínimo debajo del header ==== */
+        .body-offset {
+            padding-top: 95px !important;  /* valor correcto para tus 2 navbars */
+        }
+    </style>
+</head>
+
+<!-- APLICAMOS EL OFFSET AQUÍ -->
+<body class="body-offset">
+
+<!-- HEADER (SE INMOVILIZA AQUÍ) -->
+<div th:replace="~{fragments/header :: navbar}" class="gm-header-fixed"></div>
+
+<div class="container mt-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 >ADD VEHICLE</h4>
+
+    </div>
+
+    <form th:action="@{/management/save}"
+          th:object="${vehicleForm}"
+          method="post"
+          enctype="multipart/form-data">
+
+        <!-- ================================= -->
+        <!--           SECCIÓN SUPERIOR        -->
+        <!-- ================================= -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body">
+
+                <h5 class="mb-4">General Information</h5>
+
+                <div class="row">
+
+                    <!-- Division -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-semibold">Division</label>
+                        <select class="form-select" th:field="*{regionId}">
+                            <option value="">Select</option>
+                            <option th:each="r : ${regions}"
+                                    th:value="${r.idRegion}"
+                                    th:text="${r.nameRegion}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Brand -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-semibold">Brand</label>
+                        <select class="form-select" th:field="*{brandId}">
+                            <option value="">Select</option>
+                            <option th:each="b : ${brands}"
+                                    th:value="${b.idBrand}"
+                                    th:text="${b.nameBrand}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Vehicle Type -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-semibold">Vehicle Type</label>
+                        <select class="form-select" th:field="*{typeId}">
+                            <option value="">Select</option>
+                            <option th:each="t : ${types}"
+                                    th:value="${t.idType}"
+                                    th:text="${t.typeName}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Model -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-semibold">Model</label>
+                        <select class="form-select" th:field="*{modelId}">
+                            <option value="">Select</option>
+                            <option th:each="m : ${models}"
+                                    th:value="${m.idModel}"
+                                    th:text="${m.modelName}">
+                            </option>
+                        </select>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ================================= -->
+        <!--        SECCIÓN EDITABLE            -->
+        <!-- ================================= -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body">
+
+                <h5 class="mb-4">Specifications & Manuals</h5>
+
+                <!-- Name -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Vehicle Name</label>
+                    <input type="text" class="form-control" th:field="*{nameVehicle}">
+                </div>
+
+                <!-- Year -->
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Year</label>
+                    <input type="number" class="form-control" th:field="*{year}">
+                </div>
+
+                <!-- PDF ENG -->
+                <label class="form-label fw-semibold">English Manual</label>
+                <div class="d-flex align-items-center gap-3 p-3 border rounded bg-light mb-4">
+
+                    <input type="file" id="fileEng" name="fileEng"
+                           accept=".pdf" class="form-control "
+                           onchange="previewPdf('fileEng')"/>
+
+                    <button type="button" class="btn btn-search"
+                            onclick="showPdf('fileEng')">Preview</button>
+                </div>
+
+                <!-- PDF SPA -->
+                <label class="form-label fw-semibold">Spanish Manual</label>
+                <div class="d-flex align-items-center gap-3 p-3 border rounded bg-light mb-4">
+
+                    <input type="file" id="fileSpa" name="fileSpa"
+                           accept=".pdf" class="form-control"
+                           onchange="previewPdf('fileSpa')"/>
+
+                    <button type="button" class="btn btn-search"
+                            onclick="showPdf('fileSpa')">Preview</button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- BOTONES -->
+        <div class="d-flex justify-content-end gap-3 mb-5">
+            <a href="/management" class="btn btn-search px-4">Cancel</a>
+            <button class="btn btn-search px-5">Save</button>
+        </div>
+
+    </form>
+
+</div>
+
+<!-- ======================== -->
+<!-- MODAL: PDF PREVIEW      -->
+<!-- ======================== -->
+<div class="modal fade" id="pdfModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">PDF Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body" style="height:80vh;">
+                <iframe id="pdfFrame" width="100%" height="100%" style="border:none;"></iframe>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- ======================== -->
+<!-- MODALES DE VALIDACIÓN   -->
+<!-- ======================== -->
+<div class="modal fade" id="modalExists" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4">
+            <h1 style="color:red">❗</h1>
+            <h4>Vehicle already exists</h4>
+            <p>A vehicle with the same Region, Brand, Type, Model & Year already exists.</p>
+            <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalSuccess" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-4">
+            <h1 style="color:#ffcc00">⚠️</h1>
+            <h4>Request submitted</h4>
+            <p>Waiting for approval.</p>
+            <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    let pdfUrls = {};
+
+    function previewPdf(id) {
+        const input = document.getElementById(id);
+        if (!input.files.length) return;
+
+        const file = input.files[0];
+        if (!file.name.toLowerCase().endsWith(".pdf")) {
+            alert("Must be PDF");
+            input.value = "";
+            return;
+        }
+
+        pdfUrls[id] = URL.createObjectURL(file);
+    }
+
+    function showPdf(id) {
+        if (!pdfUrls[id]) {
+            alert("Select a PDF first");
+            return;
+        }
+        document.getElementById("pdfFrame").src = pdfUrls[id];
+        new bootstrap.Modal(document.getElementById("pdfModal")).show();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        if ("[[${vehicleExists}]]" === "true") {
+            new bootstrap.Modal(document.getElementById("modalExists")).show();
+        }
+        if ("[[${requestSubmitted}]]" === "true") {
+            const m = new bootstrap.Modal(document.getElementById("modalSuccess"));
+            m.show();
+            document.getElementById("modalSuccess").addEventListener("hidden.bs.modal",
+                () => window.location.href = "/management");
+        }
+    });
+</script>
+
+</body>
+</html>
