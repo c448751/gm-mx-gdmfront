@@ -176,7 +176,7 @@ public class MonitoringController {
         out.put("pretty", isCreate);
 
         // ==========================================================
-        // 🔥 AGREGADO: Información completa del vehículo
+        // AGREGADO: Información completa del vehículo
         // ==========================================================
         VehicleMaster v = req.getVehicle();
 
