@@ -35,7 +35,7 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      
+      # 🚀 COMPILA Y ANALIZA SIN TESTS
       - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -45,3 +45,19 @@ jobs:
           ls -la
           mvn -DskipTests=true -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
               -Dsonar.projectKey=c448751_gm-mx-gdmfront
+
+      # 🔍 SI FALLA EL BUILD, MOSTRAMOS REPORTES DE SUREFIRE
+      - name: Mostrar errores de test (Surefire)
+        if: failure()
+        run: |
+          echo "Buscando reportes de Surefire..."
+          cd gm-digital-management/target || exit 0
+          if [ -d "surefire-reports" ]; then
+            cd surefire-reports
+            echo "Archivos encontrados:"
+            ls -la || true
+            echo "Contenido de los reportes:"
+            cat *.txt || echo "No se encontraron archivos .txt."
+          else
+            echo "⚠ No existe la carpeta surefire-reports."
+          fi
